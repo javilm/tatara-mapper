@@ -13,3 +13,9 @@ test run: allocate 8 MB, free 25%, allocate 8 MB more.
 | `make2.bat` | Build script |
 | `log.txt` | Raw run log the visualisation was generated from |
 | `memmap3.html` | Self-contained visualisation (no external assets) |
+
+## Unrelated extra
+
+`omiya-coworking-model.html` — unit-economics model for a coworking space + IT
+services business in Omiya. Nothing to do with the allocator, parked here for
+sharing: https://javilm.github.io/tatara-mapper/omiya-coworking-model.html

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Omiya Coworking + IT Services — Unit Economics</title>
+<style>
+  :root{
+    --bg:#0f1419; --panel:#1a212b; --panel2:#212b38; --ink:#e8edf2; --muted:#9aa7b4;
+    --line:#2c3947; --accent:#4ea1ff; --green:#3fbf7f; --red:#ff6b6b; --amber:#f5b74e;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans JP",sans-serif;
+    line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px;margin:0 auto;padding:28px 20px 60px}
+  h1{font-size:23px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 22px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 18px 8px}
+  .card h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 14px;font-weight:600}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 13px}
+  .row label{font-size:13.5px;flex:1}
+  .row .val{font-variant-numeric:tabular-nums;color:var(--accent);font-weight:600;min-width:96px;text-align:right;font-size:13.5px}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:150px;height:4px;border-radius:3px;
+    background:var(--line);outline:none;flex:0 0 150px}
+  @media(max-width:520px){input[type=range]{flex-basis:110px;width:110px}}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+    background:var(--accent);cursor:pointer;border:2px solid #0f1419}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid #0f1419}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+  @media(max-width:520px){.two{grid-template-columns:1fr}}
+  .results{position:sticky;top:14px}
+  .big{background:linear-gradient(135deg,#1c2836,#182130);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px}
+  .kpi{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 6px}
+  .kpi .k{color:var(--muted);font-size:13px}
+  .kpi .v{font-variant-numeric:tabular-nums;font-size:15px;font-weight:600}
+  .profit{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;margin:2px 0 2px}
+  .tag{display:inline-block;font-size:12px;padding:2px 9px;border-radius:20px;font-weight:600}
+  .bar{height:11px;border-radius:6px;background:var(--line);overflow:hidden;display:flex;margin:8px 0 4px}
+  .bar span{display:block;height:100%}
+  .legend{font-size:11.5px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;margin-bottom:2px}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  td{padding:5px 0;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+  td:last-child{text-align:right;font-weight:600}
+  .sec{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:12px!important}
+  .note{font-size:12.5px;color:var(--muted);margin:10px 2px 0;line-height:1.55}
+  .foot{font-size:12px;color:var(--muted);margin-top:26px;border-top:1px solid var(--line);padding-top:14px}
+  .pill{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin-bottom:12px}
+  .pill .t{font-size:12px;color:var(--muted)}
+  .pill .n{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Omiya coworking + IT services — the unit economics</h1>
+  <p class="sub">Drag the sliders. Everything recomputes live. Defaults are a realistic ~40&nbsp;tsubo space near Omiya station. All figures in yen / month unless noted.</p>
+
+  <div class="grid">
+    <!-- LEFT: inputs -->
+    <div>
+      <div class="card">
+        <h2>The space &amp; fixed costs (your monthly "nut")</h2>
+        <div class="row"><label>Floor size (tsubo)</label><input type="range" id="tsubo" min="20" max="80" step="1" value="40"><span class="val" id="tsubo_v"></span></div>
+        <div class="row"><label>Rent per tsubo (incl. common fees)</label><input type="range" id="rentpt" min="14000" max="24000" step="500" value="20000"><span class="val" id="rentpt_v"></span></div>
+        <div class="row"><label>Bilingual full-time staff</label><input type="range" id="staff" min="0" max="4" step="1" value="2"><span class="val" id="staff_v"></span></div>
+        <div class="row"><label>Loaded cost per staff (incl. social ins.)</label><input type="range" id="staffcost" min="300000" max="520000" step="10000" value="400000"><span class="val" id="staffcost_v"></span></div>
+        <div class="row"><label>Your own monthly draw</label><input type="range" id="owner" min="0" max="800000" step="50000" value="400000"><span class="val" id="owner_v"></span></div>
+        <div class="row"><label>Utilities + business internet</label><input type="range" id="util" min="40000" max="180000" step="10000" value="100000"><span class="val" id="util_v"></span></div>
+        <div class="row"><label>Software / systems / tools</label><input type="range" id="sw" min="30000" max="180000" step="10000" value="80000"><span class="val" id="sw_v"></span></div>
+        <div class="row"><label>Marketing</label><input type="range" id="mkt" min="0" max="300000" step="10000" value="80000"><span class="val" id="mkt_v"></span></div>
+        <div class="row"><label>Insurance / accounting / misc</label><input type="range" id="misc" min="20000" max="150000" step="10000" value="50000"><span class="val" id="misc_v"></span></div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h2>Coworking revenue (the capacity business — thin)</h2>
+        <div class="two">
+          <div class="row"><label>Open-desk members</label><input type="range" id="mem" min="0" max="80" step="1" value="30"><span class="val" id="mem_v"></span></div>
+          <div class="row"><label>× price each</label><input type="range" id="memp" min="8000" max="18000" step="500" value="12000"><span class="val" id="memp_v"></span></div>
+          <div class="row"><label>Private rooms / dedicated desks</label><input type="range" id="rooms" min="0" max="12" step="1" value="4"><span class="val" id="rooms_v"></span></div>
+          <div class="row"><label>× price each</label><input type="range" id="roomp" min="18000" max="60000" step="1000" value="35000"><span class="val" id="roomp_v"></span></div>
+        </div>
+        <div class="row"><label>Drop-in revenue / month</label><input type="range" id="dropin" min="0" max="300000" step="10000" value="100000"><span class="val" id="dropin_v"></span></div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h2>IT services revenue (the real engine — fat margin)</h2>
+        <div class="two">
+          <div class="row"><label>Managed-IT retainer clients</label><input type="range" id="mit" min="0" max="50" step="1" value="15"><span class="val" id="mit_v"></span></div>
+          <div class="row"><label>× monthly retainer</label><input type="range" id="mitp" min="20000" max="120000" step="5000" value="40000"><span class="val" id="mitp_v"></span></div>
+          <div class="row"><label>Virtual-office (address+mail) clients</label><input type="range" id="vo" min="0" max="150" step="5" value="40"><span class="val" id="vo_v"></span></div>
+          <div class="row"><label>× monthly fee</label><input type="range" id="vop" min="3000" max="10000" step="500" value="5000"><span class="val" id="vop_v"></span></div>
+          <div class="row"><label>VoIP number clients</label><input type="range" id="voip" min="0" max="120" step="5" value="30"><span class="val" id="voip_v"></span></div>
+          <div class="row"><label>× monthly fee</label><input type="range" id="voipp" min="1000" max="4000" step="250" value="2000"><span class="val" id="voipp_v"></span></div>
+          <div class="row"><label>Hosting / Workspace admin clients</label><input type="range" id="host" min="0" max="150" step="5" value="40"><span class="val" id="host_v"></span></div>
+          <div class="row"><label>× monthly fee</label><input type="range" id="hostp" min="1500" max="8000" step="500" value="3000"><span class="val" id="hostp_v"></span></div>
+        </div>
+        <div class="row"><label>Web design + spot work (avg monthly margin)</label><input type="range" id="proj" min="0" max="800000" step="25000" value="250000"><span class="val" id="proj_v"></span></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: results -->
+    <div class="results">
+      <div class="big">
+        <div class="kpi"><span class="k">Monthly revenue</span><span class="v" id="rev"></span></div>
+        <div class="kpi"><span class="k">Monthly costs</span><span class="v" id="cost"></span></div>
+        <div style="height:1px;background:var(--line);margin:10px 0"></div>
+        <div class="kpi"><span class="k">Operating profit (after your draw)</span></div>
+        <div class="profit" id="prof"></div>
+        <div><span class="tag" id="margintag"></span></div>
+
+        <div class="legend" style="margin-top:16px">
+          <span><span class="dot" style="background:var(--amber)"></span>Coworking <b id="cw_pct"></b></span>
+          <span><span class="dot" style="background:var(--green)"></span>IT services <b id="sv_pct"></b></span>
+        </div>
+        <div class="bar"><span id="cw_bar" style="background:var(--amber)"></span><span id="sv_bar" style="background:var(--green)"></span></div>
+        <p class="note" id="mix_note"></p>
+      </div>
+
+      <div class="card">
+        <h2>Where it breaks even</h2>
+        <div class="pill"><div class="t">Your monthly nut (fixed costs incl. your draw)</div><div class="n" id="nut"></div></div>
+        <div class="pill"><div class="t">Coworking covers</div><div class="n" id="cw_covers"></div></div>
+        <div class="pill"><div class="t">…leaving services to cover</div><div class="n" id="gap"></div></div>
+        <p class="note" id="be_note"></p>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h2>Cost breakdown</h2>
+        <table id="ctable"></table>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h2>Cash to open the doors (one-time)</h2>
+        <div class="row"><label>Fit-out per tsubo</label><input type="range" id="fitpt" min="150000" max="500000" step="25000" value="350000"><span class="val" id="fitpt_v"></span></div>
+        <div class="row"><label>Deposit (months of rent)</label><input type="range" id="depm" min="4" max="12" step="1" value="8"><span class="val" id="depm_v"></span></div>
+        <div class="row"><label>Runway buffer (months of net ramp-up burn)</label><input type="range" id="runm" min="3" max="18" step="1" value="9"><span class="val" id="runm_v"></span></div>
+        <table id="itable"></table>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot">A teaching model, not a business plan — every number is an assumption you should pressure-test. Sources: Omiya office rent ~¥17k–22k/tsubo (officee.jp); coworking pricing near Omiya ¥2.2k–14.3k/mo open, ¥18k–55k private (coinspace.jp); coworking margins 10–30% staffed, fit-out ~¥350k/tsubo, 70%+ occupancy for stable profit (e-office.space, note.com/shareoffice_pro).</p>
+</div>
+
+<script>
+const yen = n => "¥" + Math.round(n).toLocaleString("en-US");
+const ids = ["tsubo","rentpt","staff","staffcost","owner","util","sw","mkt","misc",
+  "mem","memp","rooms","roomp","dropin","mit","mitp","vo","vop","voip","voipp","host","hostp","proj",
+  "fitpt","depm","runm"];
+const el = {}; ids.forEach(i=>el[i]=document.getElementById(i));
+const g = i => +el[i].value;
+
+function fmtSliderLabels(){
+  el.tsubo_v.textContent = g("tsubo")+" tsubo";
+  el.rentpt_v.textContent = yen(g("rentpt"));
+  el.staff_v.textContent = g("staff");
+  el.staffcost_v.textContent = yen(g("staffcost"));
+  el.owner_v.textContent = yen(g("owner"));
+  el.util_v.textContent = yen(g("util"));
+  el.sw_v.textContent = yen(g("sw"));
+  el.mkt_v.textContent = yen(g("mkt"));
+  el.misc_v.textContent = yen(g("misc"));
+  el.mem_v.textContent = g("mem");
+  el.memp_v.textContent = yen(g("memp"));
+  el.rooms_v.textContent = g("rooms");
+  el.roomp_v.textContent = yen(g("roomp"));
+  el.dropin_v.textContent = yen(g("dropin"));
+  el.mit_v.textContent = g("mit");
+  el.mitp_v.textContent = yen(g("mitp"));
+  el.vo_v.textContent = g("vo");
+  el.vop_v.textContent = yen(g("vop"));
+  el.voip_v.textContent = g("voip");
+  el.voipp_v.textContent = yen(g("voipp"));
+  el.host_v.textContent = g("host");
+  el.hostp_v.textContent = yen(g("hostp"));
+  el.proj_v.textContent = yen(g("proj"));
+  el.fitpt_v.textContent = yen(g("fitpt"));
+  el.depm_v.textContent = g("depm")+" mo";
+  el.runm_v.textContent = g("runm")+" mo";
+}
+
+// grab label-value spans
+["tsubo","rentpt","staff","staffcost","owner","util","sw","mkt","misc","mem","memp","rooms","roomp","dropin",
+ "mit","mitp","vo","vop","voip","voipp","host","hostp","proj","fitpt","depm","runm"].forEach(i=>{
+  el[i+"_v"]=document.getElementById(i+"_v");
+});
+
+function calc(){
+  const rent = g("tsubo")*g("rentpt");
+  const staff = g("staff")*g("staffcost");
+  const costs = {
+    "Rent": rent,
+    "Bilingual staff": staff,
+    "Your draw": g("owner"),
+    "Utilities + internet": g("util"),
+    "Software / systems": g("sw"),
+    "Marketing": g("mkt"),
+    "Insurance / accounting / misc": g("misc")
+  };
+  const totalCost = Object.values(costs).reduce((a,b)=>a+b,0);
+
+  const coworking = g("mem")*g("memp") + g("rooms")*g("roomp") + g("dropin");
+  const services  = g("mit")*g("mitp") + g("vo")*g("vop") + g("voip")*g("voipp") + g("host")*g("hostp") + g("proj");
+  const rev = coworking + services;
+  const profit = rev - totalCost;
+  const margin = rev>0 ? profit/rev*100 : 0;
+
+  // KPIs
+  document.getElementById("rev").textContent = yen(rev);
+  document.getElementById("cost").textContent = yen(totalCost);
+  const pe = document.getElementById("prof");
+  pe.textContent = (profit>=0?"+":"−") + yen(Math.abs(profit)).slice(1);
+  pe.style.color = profit>=0 ? "var(--green)" : "var(--red)";
+  const tag = document.getElementById("margintag");
+  tag.textContent = (profit>=0?"Profitable · ":"Losing · ") + margin.toFixed(0) + "% margin";
+  tag.style.background = profit>=0 ? "rgba(63,191,127,.15)":"rgba(255,107,107,.15)";
+  tag.style.color = profit>=0 ? "var(--green)":"var(--red)";
+
+  // mix bar
+  const cwp = rev>0 ? coworking/rev*100 : 0;
+  const svp = rev>0 ? services/rev*100 : 0;
+  document.getElementById("cw_bar").style.width = cwp+"%";
+  document.getElementById("sv_bar").style.width = svp+"%";
+  document.getElementById("cw_pct").textContent = yen(coworking)+" ("+cwp.toFixed(0)+"%)";
+  document.getElementById("sv_pct").textContent = yen(services)+" ("+svp.toFixed(0)+"%)";
+  document.getElementById("mix_note").textContent =
+    "The coworking desks are a real-estate business capped by floor space; the IT services are near-100% incremental margin on staff time you're already paying for. Notice how the profit line barely moves when you drag desks, but leaps when you drag managed-IT clients.";
+
+  // break-even
+  const nut = totalCost;
+  document.getElementById("nut").textContent = yen(nut);
+  document.getElementById("cw_covers").textContent = yen(coworking);
+  const gap = Math.max(0, nut - coworking);
+  document.getElementById("gap").textContent = yen(gap);
+  const avgRet = g("mitp")>0 ? g("mitp") : 40000;
+  const clientsNeeded = Math.ceil(gap/avgRet);
+  document.getElementById("be_note").textContent =
+    "After coworking, you still need " + yen(gap) + "/mo from services just to break even — roughly " +
+    clientsNeeded + " managed-IT clients at " + yen(avgRet) + " each (before any profit). That number, not the number of desks, is the real target.";
+
+  // cost table
+  let ct="";
+  for(const [k,v] of Object.entries(costs)) ct += `<tr><td>${k}</td><td>${yen(v)}</td></tr>`;
+  ct += `<tr><td class="sec">Total monthly</td><td class="sec">${yen(totalCost)}</td></tr>`;
+  document.getElementById("ctable").innerHTML = ct;
+
+  // initial cost table
+  const fit = g("fitpt")*g("tsubo");
+  const dep = g("depm")*rent;
+  const equip = 3000000;
+  // during the ramp you won't be at zero — assume you average ~half of mature revenue while filling up
+  const netBurn = Math.max(0, nut - rev*0.5);
+  const runway = g("runm")*netBurn;
+  const init = {
+    "Fit-out & interior": fit,
+    "Deposit / key money": dep,
+    "Equipment & IT kit": equip,
+    "Runway buffer": runway
+  };
+  const initTotal = Object.values(init).reduce((a,b)=>a+b,0);
+  let it="";
+  for(const [k,v] of Object.entries(init)) it += `<tr><td>${k}</td><td>${yen(v)}</td></tr>`;
+  it += `<tr><td class="sec">Cash to start</td><td class="sec">${yen(initTotal)}</td></tr>`;
+  document.getElementById("itable").innerHTML = it;
+}
+
+function update(){ fmtSliderLabels(); calc(); }
+ids.forEach(i=> el[i].addEventListener("input", update));
+update();
+</script>
+</body>
+</html>
